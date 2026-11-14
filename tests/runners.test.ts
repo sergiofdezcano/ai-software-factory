@@ -41,6 +41,7 @@ describe('ClaudeRunner', () => {
     const a = calls[0].args;
     expect(a[a.indexOf('--setting-sources') + 1]).toBe('project');
     expect(a).toContain('--disable-slash-commands');
+    expect(JSON.parse(a[a.indexOf('--settings') + 1])).toEqual({ attribution: { commit: '', pr: '' }, includeCoAuthoredBy: false });
   });
 
   it('en modo escritura permite editar pero nunca push ni gh', async () => {

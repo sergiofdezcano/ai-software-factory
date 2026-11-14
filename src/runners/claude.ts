@@ -17,7 +17,8 @@ const WRITE_TOOLS = [
   'Bash(ls:*)',
 ];
 const ALWAYS_DENIED = ['Bash(git push:*)', 'Bash(gh:*)', 'Bash(git remote:*)', 'Bash(git checkout:*)', 'Bash(git switch:*)', 'Bash(git reset:*)', 'WebFetch', 'WebSearch'];
-const READ_DENIED = ['Edit', 'Write', 'NotebookEdit', ...ALWAYS_DENIED];
+const NO_ATTRIBUTION = JSON.stringify({ attribution: { commit: '', pr: '' }, includeCoAuthoredBy: false });
+const READ_DENIED =['Edit', 'Write', 'NotebookEdit', ...ALWAYS_DENIED];
 
 export interface ClaudeRunnerOptions {
   model: string;
@@ -63,6 +64,9 @@ export class ClaudeRunner implements AgentRunner {
       '--setting-sources',
       'project',
       '--disable-slash-commands',
+      // Sin firma de Claude en commits ni PR (los ajustes del usuario no se cargan, así que va aquí).
+      '--settings',
+      NO_ATTRIBUTION,
     ];
     const r = await this.exec(this.opts.bin ?? 'claude', args, { cwd: call.cwd, input: call.prompt, timeoutMs: call.timeoutMs });
     const raw = r.stdout;
