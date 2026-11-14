@@ -85,6 +85,7 @@ describe('CodexRunner', () => {
     expect(a[a.indexOf('--sandbox') + 1]).toBe('read-only');
     expect(a[a.indexOf('-C') + 1]).toBe('C:/wt');
     expect(a[a.indexOf('-m') + 1]).toBe('gpt-x');
+    expect(a).toContain('--ignore-user-config');
     expect(a.at(-1)).toBe('-');
     expect(calls[0].input).toBe('hola');
   });
