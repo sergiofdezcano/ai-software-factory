@@ -155,8 +155,12 @@ async function main() {
   }
 
   if (cmd === 'status') {
-    const s = new RunStore(join(ROOT, 'runs', `${appName}-${issue}`)).load();
+    const store = new RunStore(join(ROOT, 'runs', `${appName}-${issue}`));
+    const s = store.load();
     console.log(JSON.stringify({ step: s.step, specRevisions: s.specRevisions, buildRounds: s.buildRounds, paused: s.paused, outcome: s.outcome }, null, 2));
+    const c = store.costs();
+    for (const r of c.agents) console.log(`  ${r.role.padEnd(18)} ${r.agent.padEnd(28)} ${String(Math.round(r.ms / 1000)).padStart(5)} s  ${r.usd === null ? '—' : `${r.usd.toFixed(2)} $`}`);
+    console.log(c.summary);
     return;
   }
 

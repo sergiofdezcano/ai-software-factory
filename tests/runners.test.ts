@@ -35,6 +35,14 @@ describe('ClaudeRunner', () => {
     expect(JSON.parse(a[a.indexOf('--mcp-config') + 1])).toEqual({ mcpServers: {} });
   });
 
+  it('aísla al agente de la configuración del usuario: sin sus ajustes, plugins, hooks, CLAUDE.md ni skills', async () => {
+    const { exec, calls } = fakeExec(() => ({ stdout: JSON.stringify({ is_error: false, structured_output: {} }) }));
+    await new ClaudeRunner({ model: 'opus', exec }).run(call);
+    const a = calls[0].args;
+    expect(a[a.indexOf('--setting-sources') + 1]).toBe('project');
+    expect(a).toContain('--disable-slash-commands');
+  });
+
   it('en modo escritura permite editar pero nunca push ni gh', async () => {
     const { exec, calls } = fakeExec(() => ({ stdout: JSON.stringify({ is_error: false, structured_output: {} }) }));
     await new ClaudeRunner({ model: 'opus', exec }).run({ ...call, mode: 'write' });
