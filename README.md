@@ -40,9 +40,9 @@ En `runs/<app>-<issue>/` queda todo: el prompt exacto y la salida de cada agente
 
 ## Servidor 24/7 y Telegram
 
-La fábrica corre como servicio en un LXC de Proxmox y se le piden cosas por Telegram a través de Hermes. Diseño: `docs/superpowers/specs/2026-11-08-factory-24x7-design.md`.
+La fábrica corre como servicio en orca-studio, con su propio usuario `factory` y todo bajo `/srv/factory`, y se le piden cosas por Telegram a través de Hermes. Diseño: `docs/superpowers/specs/2026-11-08-factory-24x7-design.md`.
 
-- `deploy/HERMES-RUNBOOK.md`: pasos para que Hermes cree e instale el LXC (`create-lxc.sh`, `install.sh`, `ai-factory.service`).
+- `deploy/RUNBOOK.md`: pasos para instalarla en orca-studio y mudarla desde el LXC viejo (`install.sh`, `update.sh`, `ai-factory.service`).
 - `integrations/hermes/ai-factory/SKILL.md`: skill de Hermes para encargar tareas y consultar su estado (solo issues).
 - Con `FACTORY_TELEGRAM_BOT_TOKEN` y `FACTORY_TELEGRAM_CHAT_ID`, la fábrica avisa de spec lista, PR, merge, atascos y pausas.
 - Reserva cruzada: si Claude se queda sin cuota, Codex hace ese paso (y al revés). La revisión de seguridad la hace Codex.
