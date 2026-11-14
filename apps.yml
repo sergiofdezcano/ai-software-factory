@@ -5,5 +5,5 @@ approver_login: sergiofdezcano
 apps:
   landing:
     repo: sergiofdezcano/Serg4Cano-Landing-Page
-    path: C:/Users/sergi/Serg4Cano-Landing-Page
+    path: C:/Users/sergi/repos/creator/serg4cano-landing
     auto_approve_spec: true
