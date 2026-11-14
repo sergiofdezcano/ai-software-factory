@@ -1,17 +1,18 @@
 #!/usr/bin/env bash
-# Instala la AI Software Factory DENTRO del LXC (Debian 12), como root.
+# Instala la AI Software Factory en el servidor (Ubuntu o Debian), como root.
+# En una máquina compartida: todo vive en /srv/factory y corre como el usuario factory.
 # Se puede repetir: cada paso comprueba lo que ya está hecho.
 #
 # Uso:
 #   1ª vez:  bash install.sh            -> instala el sistema y crea /etc/ai-factory/env de ejemplo
 #   rellenar /etc/ai-factory/env (GH_TOKEN, CLAUDE_CODE_OAUTH_TOKEN, Telegram)
 #   2ª vez:  bash install.sh            -> clona la fábrica y las apps, instala dependencias y el servicio
-# No activa el servicio: eso se hace en el corte (ver deploy/HERMES-RUNBOOK.md).
+# No activa el servicio: eso se hace en el corte (ver deploy/RUNBOOK.md).
 set -euo pipefail
 
 FACTORY_REPO="${FACTORY_REPO:-sergiofdezcano/AI-Software-Factory}"
-FACTORY_DIR=/opt/ai-factory
-APPS_DIR=/srv/apps
+FACTORY_DIR=/srv/factory/ai-software-factory
+APPS_DIR=/srv/factory/apps
 ENV_FILE=/etc/ai-factory/env
 USER_NAME=factory
 
@@ -25,7 +26,12 @@ export DEBIAN_FRONTEND=noninteractive
 apt-get update -qq
 apt-get install -y -qq curl git ca-certificates gnupg sudo jq >/dev/null
 
-if ! command -v node >/dev/null || [[ "$(node -v)" != v24* ]]; then
+if command -v node >/dev/null && [[ "$(node -v)" != v24* ]]; then
+  # Máquina compartida: no se cambia un Node que pueden estar usando otros servicios.
+  echo "Hay Node $(node -v) instalado y la fábrica necesita Node 24. Actualízalo a mano (comprobando qué más lo usa) y repite." >&2
+  exit 1
+fi
+if ! command -v node >/dev/null; then
   log "Node 24"
   curl -fsSL https://deb.nodesource.com/setup_24.x | bash - >/dev/null
   apt-get install -y -qq nodejs >/dev/null
@@ -62,7 +68,7 @@ chown "$USER_NAME:$USER_NAME" "$FACTORY_DIR" "$APPS_DIR"
 if [[ ! -f "$ENV_FILE" ]]; then
   install -d -m 0750 -o "$USER_NAME" -g "$USER_NAME" /etc/ai-factory
   curl -fsSL "https://raw.githubusercontent.com/${FACTORY_REPO}/main/deploy/env.example" -o "$ENV_FILE" 2>/dev/null \
-    || printf 'GH_TOKEN=\nCLAUDE_CODE_OAUTH_TOKEN=\nFACTORY_TELEGRAM_BOT_TOKEN=\nFACTORY_TELEGRAM_CHAT_ID=\nFACTORY_APPS_DIR=/srv/apps\n' > "$ENV_FILE"
+    || printf 'GH_TOKEN=\nCLAUDE_CODE_OAUTH_TOKEN=\nFACTORY_TELEGRAM_BOT_TOKEN=\nFACTORY_TELEGRAM_CHAT_ID=\nFACTORY_APPS_DIR=/srv/factory/apps\n' > "$ENV_FILE"
   chown "$USER_NAME:$USER_NAME" "$ENV_FILE"
   chmod 600 "$ENV_FILE"
   log "Creado $ENV_FILE. Rellena GH_TOKEN y CLAUDE_CODE_OAUTH_TOKEN (y Telegram) y vuelve a ejecutar este script."
@@ -113,5 +119,5 @@ cat <<EOF
 Listo. Falta, si no está hecho:
   - Login de Codex:  su - $USER_NAME -c 'codex login --device-auth'   (validas el código desde el móvil)
   - Prueba:          su - $USER_NAME -c 'set -a; . $ENV_FILE; set +a; cd $FACTORY_DIR && npx tsx src/cli.ts watch --once --dry-run'
-  - Corte:           systemctl enable --now ai-factory   (después de apagar la tarea programada de Windows)
+  - Corte:           systemctl enable --now ai-factory   (después de parar la fábrica anterior, ver deploy/RUNBOOK.md)
 EOF

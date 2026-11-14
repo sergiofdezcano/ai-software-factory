@@ -4,6 +4,8 @@ Fecha: 2026-11-08
 Estado: aprobado en brainstorming.
 Base: `2026-11-08-software-factory-v1-design.md` (pipeline v1, ya en producción en Windows).
 
+> **Cambio (2026-11-14):** la fábrica deja el LXC dedicado y pasa a orca-studio, para tener una máquina menos que mantener y todo recogido. Corre con el usuario `factory`, que hace de límite (no ve `/srv/projects` ni la configuración del usuario), y todo lo suyo vive en `/srv/factory`. `create-lxc.sh` desaparece y el runbook pasa a ser `deploy/RUNBOOK.md`, para una sesión de Claude Code en orca-studio. Lo demás de este documento sigue vigente.
+
 ## Objetivo
 
 Pedir trabajo a la fábrica desde cualquier dispositivo, por Telegram, y que lo haga aunque el PC esté apagado.

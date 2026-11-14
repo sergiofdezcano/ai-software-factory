@@ -28,7 +28,7 @@ Modelos (variables de entorno opcionales):
   FACTORY_MODEL_CODEX   por defecto el de ~/.codex/config.toml (seguridad y reserva de todos los roles)
 
 Otras variables:
-  FACTORY_APPS_DIR            carpeta con los clones de las apps (<dir>/<app>), p. ej. /srv/apps
+  FACTORY_APPS_DIR            carpeta con los clones de las apps (<dir>/<app>), p. ej. /srv/factory/apps
   FACTORY_TELEGRAM_BOT_TOKEN  y FACTORY_TELEGRAM_CHAT_ID: avisos por Telegram`;
 
 // Un solo run a la vez (la v1 no tiene paralelismo).
