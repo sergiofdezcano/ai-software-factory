@@ -28,4 +28,21 @@ describe('RunStore', () => {
     expect(files).toEqual(['001-spec-prompt.md', '002-spec.json', '003-build.json']);
     expect(JSON.parse(readFileSync(join(store.dir, '002-spec.json'), 'utf8'))).toEqual({ a: 1 });
   });
+
+  it('suma coste y tiempo de los agentes; Codex no informa de coste', () => {
+    const store = new RunStore(mkdtempSync(join(tmpdir(), 'run-')));
+    store.artifact('spec-writer-prompt.md', 'no cuenta');
+    store.artifact('spec-writer-output.json', { agent: 'claude:opus', ms: 60000, raw: JSON.stringify({ total_cost_usd: 0.5 }) });
+    store.artifact('reviewer-security-output.json', { agent: 'codex:default', ms: 30000, raw: '{}' });
+    store.artifact('builder-output.json', { agent: 'claude:opus', ms: 90000, raw: JSON.stringify({ total_cost_usd: 1.25 }) });
+    const c = store.costs();
+    expect(c.agents).toEqual([
+      { role: 'spec-writer', agent: 'claude:opus', ms: 60000, usd: 0.5 },
+      { role: 'reviewer-security', agent: 'codex:default', ms: 30000, usd: null },
+      { role: 'builder', agent: 'claude:opus', ms: 90000, usd: 1.25 },
+    ]);
+    expect(c.usd).toBe(1.75);
+    expect(c.ms).toBe(180000);
+    expect(c.summary).toBe('Coste: 1.75 $ en 3 min (sin contar 1 llamada a Codex, que no informa de coste)');
+  });
 });

@@ -166,6 +166,7 @@ describe('pipeline', () => {
     expect(gh.statuses.at(-1)).toBe('factory:merged');
     expect(git.removed).toBe(true);
     expect(ctx.store.load().outcome?.kind).toBe('merged');
+    expect(gh.comments.at(-1)).toMatch(/Coste: [\d.]+ \$ en \d+ min/);
   });
 
   it('ignora /approve de otra persona', async () => {
@@ -185,6 +186,7 @@ describe('pipeline', () => {
     expect(gh.merged).toHaveLength(0);
     expect(gh.prs[0]).toContain('src/components/Setup.astro');
     expect(gh.statuses.at(-1)).toBe('factory:pr');
+    expect(gh.comments.at(-1)).toMatch(/Coste: [\d.]+ \$ en \d+ min/);
   });
 
   it('el clasificador puede subir el riesgo', async () => {
