@@ -27,7 +27,7 @@ Las etiquetas del issue muestran el estado: `factory:spec`, `factory:awaiting-sp
 npm install
 npm run factory -- run landing 12            # avanza el issue #12 todo lo posible
 npm run factory -- run landing 12 --dry-run  # igual, pero sin escribir en GitHub ni hacer push
-npm run factory -- status landing 12
+npm run factory -- status landing 12         # estado, y coste y tiempo de cada agente
 npm run factory -- watch                     # procesa en bucle todos los issues con la etiqueta factory (cada 5 min)
 npm run factory -- watch --once              # una sola pasada
 ```
@@ -81,6 +81,6 @@ npm run typecheck
 | `src/risk.ts` | reglas de riesgo y condiciones de automerge |
 | `src/findings.ts` | descarta hallazgos que no se pueden verificar en el código |
 | `src/commands.ts` | lee `/approve` y `/revise`, solo del `approver_login` |
-| `src/runners/` | `claude -p` y `codex exec` con permisos impuestos por flags |
+| `src/runners/` | `claude -p` y `codex exec` con permisos impuestos por flags. Claude corre sin tus ajustes de usuario (plugins, hooks, `CLAUDE.md` global) ni skills |
 | `prompts/` | un prompt por rol |
 | `schemas/` | el JSON que debe devolver cada agente |

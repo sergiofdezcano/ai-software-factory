@@ -367,14 +367,14 @@ export async function runPipeline(deps: PipelineDeps, ctx: PipelineContext): Pro
             state.outcome = { kind: 'merged', url };
             await github.setStatus(ctx.repo, ctx.issue, 'factory:merged');
             await notify(`✅ Mergeado #${ctx.issue}: ${state.spec!.title}\n${url}`);
-            await github.comment(ctx.repo, ctx.issue, `${MARKER}\n✅ Cambio de bajo riesgo mergeado automáticamente: ${url}`);
+            await github.comment(ctx.repo, ctx.issue, `${MARKER}\n✅ Cambio de bajo riesgo mergeado automáticamente: ${url}\n\n${store.costs().summary}`);
           } else {
             await github.setStatus(ctx.repo, ctx.issue, 'factory:pr');
             await notify(`👀 PR para revisar #${ctx.issue}: ${state.spec!.title}\n${url}\nMotivo: ${blockers.join(' ')}`);
             await github.comment(
               ctx.repo,
               ctx.issue,
-              `${MARKER}\n👀 PR lista para que la revises: ${url}\n\nNo se mergeó sola porque:\n${blockers.map((b) => `- ${b}`).join('\n')}`,
+              `${MARKER}\n👀 PR lista para que la revises: ${url}\n\nNo se mergeó sola porque:\n${blockers.map((b) => `- ${b}`).join('\n')}\n\n${store.costs().summary}`,
             );
           }
           state.outcome.announced = true;

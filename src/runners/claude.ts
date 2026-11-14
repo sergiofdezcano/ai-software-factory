@@ -58,6 +58,11 @@ export class ClaudeRunner implements AgentRunner {
       '--strict-mcp-config',
       '--mcp-config',
       '{"mcpServers":{}}',
+      // Solo los ajustes del repo de la app: fuera los del usuario (plugins, hooks, CLAUDE.md global) y las skills.
+      // Así el agente se comporta igual en cualquier máquina y no carga contexto que nadie pidió.
+      '--setting-sources',
+      'project',
+      '--disable-slash-commands',
     ];
     const r = await this.exec(this.opts.bin ?? 'claude', args, { cwd: call.cwd, input: call.prompt, timeoutMs: call.timeoutMs });
     const raw = r.stdout;
