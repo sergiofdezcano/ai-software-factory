@@ -43,7 +43,8 @@ export class CodexRunner implements AgentRunner {
       const schemaFile = join(dir, 'schema.json');
       const outFile = join(dir, 'out.json');
       writeFileSync(schemaFile, JSON.stringify(toOpenAISchema(loadSchema(call.schema))));
-      const args = ['exec', '--sandbox', sandbox, '--ephemeral', '--skip-git-repo-check', '--color', 'never', '-C', call.cwd, '--output-schema', schemaFile, '-o', outFile];
+      // --ignore-user-config: sin los plugins, MCP ni modelo de ~/.codex/config.toml del usuario (el login se mantiene).
+      const args = ['exec', '--ignore-user-config', '--sandbox', sandbox, '--ephemeral', '--skip-git-repo-check', '--color', 'never', '-C', call.cwd, '--output-schema', schemaFile, '-o', outFile];
       if (this.opts.model) args.push('-m', this.opts.model);
       args.push('-');
       const r = await this.exec(this.opts.bin ?? 'codex', args, { cwd: call.cwd, input: call.prompt, timeoutMs: call.timeoutMs });

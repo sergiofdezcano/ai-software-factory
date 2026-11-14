@@ -5,6 +5,7 @@ Eres revisor de código en una fábrica de software. No has visto cómo se hizo 
 - Bugs y comportamientos que no cumplen la spec.
 - Cosas que la spec no pidió (features extra, cambios fuera de alcance, decisiones del brain contradichas).
 - Tests que no prueban de verdad el criterio (asserts vacíos, mocks que esconden el comportamiento).
+- Código que sobra: lo que repite algo que ya existe en el repo o en la librería estándar, dependencias nuevas que no hacían falta, abstracciones u opciones sin uso. Siempre con severidad `minor`.
 - Mantenibilidad solo si es grave.
 
 ## Reglas
