@@ -28,4 +28,32 @@ describe('TelegramNotifier', () => {
     expect(notifierFromEnv({})).toBeUndefined();
     expect(notifierFromEnv({ FACTORY_TELEGRAM_BOT_TOKEN: 't', FACTORY_TELEGRAM_CHAT_ID: '1' })).toBeInstanceOf(TelegramNotifier);
   });
+
+  it('con FACTORY_TELEGRAM_THREAD_ID escribe en ese tema del grupo', async () => {
+    const calls: any[] = [];
+    const fetchFn = (async (_url: string, init: any) => {
+      calls.push(JSON.parse(init.body));
+      return new Response('{"ok":true}', { status: 200 });
+    }) as unknown as typeof fetch;
+    const n = notifierFromEnv({ FACTORY_TELEGRAM_BOT_TOKEN: 't', FACTORY_TELEGRAM_CHAT_ID: '-100', FACTORY_TELEGRAM_THREAD_ID: '6' }, fetchFn);
+    await n!.send('hola');
+    expect(calls[0]).toMatchObject({ chat_id: '-100', message_thread_id: 6 });
+    await new TelegramNotifier('T', '42', fetchFn).send('privado');
+    expect(calls[1]).not.toHaveProperty('message_thread_id');
+  });
+
+  it('si el tema ya no existe, reenvía sin tema para no perder el aviso', async () => {
+    const calls: any[] = [];
+    const fetchFn = (async (_url: string, init: any) => {
+      const body = JSON.parse(init.body);
+      calls.push(body);
+      return body.message_thread_id
+        ? new Response('{"ok":false,"description":"Bad Request: message thread not found"}', { status: 400 })
+        : new Response('{"ok":true}', { status: 200 });
+    }) as unknown as typeof fetch;
+    const logs: string[] = [];
+    await new TelegramNotifier('T', '-100', fetchFn, (m) => logs.push(m), 6).send('hola');
+    expect(calls).toHaveLength(2);
+    expect(calls[1]).not.toHaveProperty('message_thread_id');
+  });
 });

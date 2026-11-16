@@ -44,7 +44,7 @@ La fábrica corre como servicio en orca-studio, con su propio usuario `factory` 
 
 - `deploy/RUNBOOK.md`: pasos para instalarla en orca-studio y mudarla desde el LXC viejo (`install.sh`, `update.sh`, `ai-factory.service`).
 - `integrations/hermes/ai-factory/SKILL.md`: skill de Hermes para encargar tareas y consultar su estado (solo issues).
-- Con `FACTORY_TELEGRAM_BOT_TOKEN` y `FACTORY_TELEGRAM_CHAT_ID`, la fábrica avisa de spec lista, PR, merge, atascos y pausas.
+- Con `FACTORY_TELEGRAM_BOT_TOKEN` y `FACTORY_TELEGRAM_CHAT_ID`, la fábrica avisa de spec lista, PR, merge, atascos y pausas. Con `FACTORY_TELEGRAM_THREAD_ID` (y el chat del grupo "Serg4Cano HQ"), los avisos van al tema 🏭 Factory.
 - Reserva cruzada: si Claude se queda sin cuota, Codex hace ese paso (y al revés). La revisión de seguridad la hace Codex.
 
 ## Requisitos

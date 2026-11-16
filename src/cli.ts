@@ -29,7 +29,7 @@ Modelos (variables de entorno opcionales):
 
 Otras variables:
   FACTORY_APPS_DIR            carpeta con los clones de las apps (<dir>/<app>), p. ej. /srv/factory/apps
-  FACTORY_TELEGRAM_BOT_TOKEN  y FACTORY_TELEGRAM_CHAT_ID: avisos por Telegram`;
+  FACTORY_TELEGRAM_BOT_TOKEN  y FACTORY_TELEGRAM_CHAT_ID: avisos por Telegram (FACTORY_TELEGRAM_THREAD_ID: tema del grupo)`;
 
 // Un solo run a la vez (la v1 no tiene paralelismo).
 function acquireLock(file: string): () => void {
